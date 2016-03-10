@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+
+<head>
+	<meta charset="utf-8">
+	<title>Using BLS API Version 1.0 Single Series Call</title>
+	<link rel="stylesheet" type="text/css" href="css/mainpage.css">
+</head>
+
+
+<body>
+
+<div class="header">
+	<a href="how-to-index.html">Home</a> | <a href="seriesidexplanations.html">Series_id Explanations</a> | <a href="vcompare.html">Version 1.0 vs Version 2.0</a> | <a href="v1howto.html">Version 1.0 Single Series Requests</a> | <a href="v1howtomultcall.html">Version 1.0 Multiple Series Requests</a> | <a href="v2howto.html">Version 2.0 Requests</a>
+</div>
+
+<div class="content">
+	<h1>Packages</h1>
+	<p>All code examples work with the following before them in the same .js file:</p>
+<code style="white-space:pre;">var request = require("request");
+var express = require("express");
+var handlebars = require("express-handlebars").create({defaultLayout:'main'});
+var bodyParser = require("body-parser");
+var credentials = require("./credentials.js");
+			
+var app = express();
+app.engine('handlebars', handlebars.engine);
+app.set('view engine', 'handlebars');
+app.use(bodyParser.urlencoded({ extended: false }));
+app.set('port', 3000);
+app.use(express.static('public'));</code>
+	<p>Ignore the credentials.js.  It is simply a file that I am using to store my API key, which is not relevant to Version 1.0.</p>
+	
+
+
+	<h1>Formatting a Single Series Request</h1>
+	<p>
+		A single series request is a GET request that only has one series_id in the URL. <a href="seriesidexplanations.html#seriesidexplan">Click here to read read  on formatting your series_id.</a> Your javascript call should look something like:
+	</p>
+	
+	<code style="white-space:pre;">
+app.get("/blsv1get", function (req, res, next) {
+	var context = {};
+	var payload = {series_id: 'LAUCN040010000000005'};
+	request('http://api.bls.gov/publicAPI/v1/timeseries/data/' + payload.series_id, handleGet);
+	
+	function handleGet(err, response, body) {
+		if(!err && response.statusCode < 400)
+		{
+			context.returndata = JSON.stringify(JSON.parse(body));
+			res.render("home", context);
+		} else {
+			console.log(err);
+			console.log(response.statusCode);
+		}
+	}
+});
+	</code>
+	<p>
+		The context object will be where the data from your call is returned to.  The payload is, for now, just a convenient place to store your data in an organized fashion, but will be necessary when we make our POST calls.
+	</p>
+		<p>The request uses the request package to make things cleaner and easier, and to do things for us.  The first parameter (everything before the comma) consists of the main url <code class="variables">"http://api.bls.gov/publicAPI/vi/timeseries/data/"</code> followed by the <code class="variables">series_id</code>.  Note that there are no "&" or "?" like you would see in other requests, as if you include any other parameters in the url, the request will ignore them.  The API will also not accept a "?" or "&" in front of the <code class="variables">series_id</code>.  If you include an "?" in front of the <code class="variables">series_id</code>, you will get an error 415, and if you include an "&" the call will return "Invalid Series for Series &lt;series_id&gt;" in the "message" field where &lt;series_id&gt; is what you put after <code class="variables">data/</code>.  By default the HTTP Content-Type is set to "application/json", which is the Content-Type required by the BLS API Version 1.0.
+	</p>
+	<p>The next part is the "handleGet" function, which is the callback function for the request.  For ease of readability, it is declared seperately below the request call.  Simply, it takes in 3 parameters: an error, the server's response, and the body which holds the data that you requested (or not, if there was an error).  The if/else statement simply makes it so that if there is an error (in which case the response.statusCode will be 400 or greater) that the error and error code will be logged to the console.  If the request is successful, the data that you requested should be stored in a JSON string in "body", and you can JSON.parse(body) to turn it into a JSON object that you can store and do things with.
+	</p>
+		
+	<h2>Error Codes</h2>
+	<p>From the BLS API documentation, possible error codes that you can receive are:
+	</p>
+	<code style="white-space:pre; -moz-tab-size:4;">202: Your request is processing.
+400: Your request did not follow the correct syntax.
+401: You're not authorized to make this request.
+404: Your request was not found and/or does not exist.
+429: You have made too many requests.
+500: The server has encountered an unexpected condition, and the request cannot be completed.</code><br>
+		
+	<h2>Getting useful things from your call</h2>
+	<p>The information that you requested will be stored in "Results".  In your if statement in the handleGet function, you can add this line below:
+	</p>
+	<code>var returnedData = JSON.parse(body).Results;</code>
+	<p>If you don't add the ".Results", "returnedData" would look like:
+	</p>
+	<code style="white-space:pre; -moz-tab-size:4;">
+{
+	"status":"REQUEST_SUCCEEDED",
+	"responseTime":45,
+	"message":[],
+	"Results":
+	{
+	"series": [{
+		"seriesID":"LAUCN040010000000005",
+		"data":[{
+				"year":"2015",
+				"period":"M12",
+				"periodName":"December",
+				"value":"17633",
+				"footnotes":[{"code":"P","text":"Preliminary."}]
+			},
+			{
+				"year":"2015",
+				"period":"M11",
+				"periodName":"November",
+				"value":"17761",
+				"footnotes":[{}]
+			},
+			{
+				"year":"2015",
+				"period":"M10",
+				"periodName":"October",
+				"value":"17777",
+				"footnotes":[{}]
+			},
+					//the results were cut to save room
+			{
+				"year":"2013",
+				"period":"M01",
+				"periodName":"January",
+				"value":"17956",
+				"footnotes":[{}]
+			}]
+	}]
+} 
+}
+	</code>
+	<p>Assuming you set <code class="variables">returnedData</code> equal to the <code class="variables">Results</code>, you can access the value of the returned data from November 2015 by:
+	</p>
+	<code>returnedData.series[0].data[1].value</code>
+	<p>The <code class="variables">"series"</code> member of <code class="variables">"Results"</code> is an array that holds the data for the series that you requested.  We can get the data for the series <code class="variables">LAUCN040010000000005</code> by indexing into the first value in the <code class="variables">"series"</code> array with <code class="variables">.series[0]</code>, which gives us access to the <code class="variables">"seriesID"</code> and <code class="variables">"data"</code> members.  <code class="variables">"data"</code> is another array, so we index into it with <code class="variables">.data[1]</code>, which gives us the object that holds the data for November 2015.  Now that we have the object that we want, we can call the member <code class="variables">"value"</code> to get its value, which is "17761".</p>
+		
+	<p>The values that you get returned from different <code class="variables">series_id</code>s vary, so you'll have go go ahead and expirement on your own.  Remember, <code class="variables">console.log(JSON.stringify(JSON.parse(body)));</code> will be a close friend to put in your <code class="variables">handleGet</code> function.</p>
+		
+	<a href="v1howtomultcall.html">Click here to learn how to make calls with multiple series_ids</a>
+</div>
+
+
+</body>
+</html>

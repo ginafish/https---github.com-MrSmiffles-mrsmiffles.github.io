@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+
+<head>
+	<meta charset="utf-8">
+	<title>Using BLS API Version 2.0 Requests</title>
+	<link rel="stylesheet" type="text/css" href="css/mainpage.css">
+</head>
+
+
+<body>
+<div class="header">
+	<a href="how-to-index.html">Home</a> | <a href="seriesidexplanations.html">Series_id Explanations</a> | <a href="vcompare.html">Version 1.0 vs Version 2.0</a> | <a href="v1howto.html">Version 1.0 Single Series Requests</a> | <a href="v1howtomultcall.html">Version 1.0 Multiple Series Requests</a> | <a href="v2howto.html">Version 2.0 Requests</a>
+</div>
+<div class="content">
+	
+	<h1>Formatting your Single Series Version 2.0 request</h1>
+	<p>Example:</p>
+<code style="white-space:pre;">app.get("/blsv2get", function (req, res, next) {
+	var context = {};
+	var payload = {series_id: 'LAUCN040010000000005'};
+	request('http://api.bls.gov/publicAPI/v2/timeseries/data/' + payload.series_id + "?" + credentials.apikey, handleGet);
+	
+	function handleGet(err, response, body) {
+		if(!err && response.statusCode < 400)
+		{
+			context.returndata = JSON.stringify(JSON.parse(body));
+			res.render("home", context);
+		} else {
+			console.log(err);
+			console.log(response.statusCode);
+		}
+	}
+	
+});</code>
+	<p>You see much different? That's right, not really.  Make sure to change the url in the request to <code class="variables">'http://api.bls.gov/publicAPI/v2/timeseries/data/'</code> from your Version 1.0 request, and then append a "?" and your API key to the URL.  If you don't know how to get an API key, go back to <a href="vcompare.html">here</a>, and if you need more information on creating your call visit <a href="v1howto.html">here</a>.</p>
+	
+	
+	
+	<h1>Formatting your Multiple Series Version 2.0 request</h1>
+	<p>Things are a little different here too, but not much.</p>
+	<code style="white-space:pre;">app.get("/blsv2post", function(req, res) {
+	var context = {};
+	var payload = {
+		"url": "http://api.bls.gov/publicAPI/v2/timeseries/data/",
+		"method": "POST",
+		"body":'{"seriesid":["LAUCN040010000000005", "LAUCN040010000000006"], "startyear":"2010", "endyear":"2012", "catalog":false, "calculations":true, "annualaverage":true, "registrationKey":credentials.apikey}',
+		"headers":
+		{
+			"Content-Type":"application/json",
+		}
+	};
+	
+	request(payload, handlePost);
+	
+	function handlePost(err, response, body) {
+		if(!err && response.statusCode < 400)
+		{
+			context.returndata = JSON.stringify(JSON.parse(body));
+			res.render("home", context);
+		} else {
+			console.log(err);
+			console.log(response.statusCode);
+		}
+	}
+
+});</code>
+	<p>Replace credentials.apikey with your API key and you're good to go. <code class="variables">"catalog"</code>, <code class="variables">"calculations"</code>, and <code class="variables">"annualaverage"</code> are all false by default, so if you leave them out of the call you should have no problems.  If you set one of them to true, make sure to include a <code class="variables">startyear</code> and an <code class="variables">endyear</code>.</p>
+	
+</div>
+</body>
+</html>

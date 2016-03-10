@@ -1,0 +1,40 @@
+<head>
+	<meta charset="utf-8">
+	<title>Version 1.0 vs Version 2.0</title>
+	<link rel="stylesheet" type="text/css" href="css/mainpage.css">
+</head>
+
+
+<body>
+
+<div class="header">
+	<a href="how-to-index.html">Home</a> | <a href="seriesidexplanations.html">Series_id Explanations</a> | <a href="vcompare.html">Version 1.0 vs Version 2.0</a> | <a href="v1howto.html">Version 1.0 Single Series Requests</a> | <a href="v1howtomultcall.html">Version 1.0 Multiple Series Requests</a> | <a href="v2howto.html">Version 2.0 Requests</a>
+</div>
+
+<div class="content">
+	<h1><a name="versionids"></a>Version 2.0 vs. Version 1.0</h1>
+	<p>
+		When making calls with the BLS API, you must select between using Version 1.0 calls and Version 2.0 calls.
+	</p>
+    <h3>When to use Version 1.0:</h3>
+    <ul>
+        <li>You are only planning to send 25 or fewer queries per day.</li>
+        <li>You are only going to include 25 or less serieses per query.</li>
+        <li>You will only ask for 10 or less years per query.</li>
+        <li>You are not looking for aggregate statistics like net/percent changes, optional annual averages, and series description information from the catalog.</li>
+    </ul>
+    <h3>With Version 2.0:</h3>
+    <ul>
+        <li>You are required to make an account and receive an API key to use Version 2.0.  After registering, check your e-mail for a confirmation e-mail that will include your API key. <a href="http://data.bls.gov/registrationEngine/" target="_blank">Click here to register.</a></li>
+        <li>You get up to 500 queries per day.</li>
+        <li>You can include up to 50 serieses per query, and can call data for up to 20 years' worth per query.</li>
+        <li>You can query for net/percent changes, optional annual averages, and series description information from the catalog.</li>
+        <li>Version 2.0 also supports x-www-form-urlencoded content type for the request body, as well as excel spreadsheet (XLSX), but the latter is outside the scope of this guide.</li>
+    </ul>
+    <p>Basically, you get more features with Version 2.0 than Version 1.0, but you may not want to go to the trouble of registering for an API key if you're only doing a few simple queries.</p>
+	
+	<a href="v1howto.html">Click here to view how to use version 1.0</a><br>
+	<a href="v2howto.html">Click here to view how to use version 2.0</a>
+</div>
+</body>
+</html>

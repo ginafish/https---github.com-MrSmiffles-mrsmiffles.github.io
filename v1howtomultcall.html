@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+
+<head>
+	<meta charset="utf-8">
+	<title>Using BLS API Version 1.0 Multiple Series Requests</title>
+	<link rel="stylesheet" type="text/css" href="css/mainpage.css">
+</head>
+
+
+<body>
+<div class="header">
+	<a href="how-to-index.html">Home</a> | <a href="seriesidexplanations.html">Series_id Explanations</a> | <a href="vcompare.html">Version 1.0 vs Version 2.0</a> | <a href="v1howto.html">Version 1.0 Single Series Requests</a> | <a href="v1howtomultcall.html">Version 1.0 Multiple Series Requests</a> | <a href="v2howto.html">Version 2.0 Requests</a>
+</div>
+
+<div class="content">
+	<h1>Formatting a request for multiple serieses</h1>
+	<p>
+		In this case you will be making a POST request with a payload variable.  As a Version 1.0 user, you can only call up to 25 serieses in your payload at once.  With a POST call, you can set a "startyear" and "endyear" in your payload that must be equal to or less than ten years apart. Note that setting a start and end year will apply to all series_id's in your request, and that if you set a "startyear" and not an "endyear" or vice versa you will receive an error.
+	</p>
+    
+    <code style="white-space:pre;">
+app.get("/blsv1post", function(req, res) {
+	var context = {};
+	var payload = {
+		"url": "http://api.bls.gov/publicAPI/v1/timeseries/data/",
+		"method": "POST",
+		"body":'{"seriesid":["LAUCN040010000000005", "LAUCN040010000000006"],
+			"startyear":"2014", "endyear":"2015"}',
+		"headers":
+		{
+			"Content-Type":"application/json"
+		}
+	};
+	
+	request(payload, handlePost);
+	
+	function handlePost(err, response, body) {
+		if(!err && response.statusCode < 400)
+		{
+			context.returndata = JSON.stringify(JSON.parse(body));
+			res.render("home", context);
+		} else {
+			console.log(err);
+		}
+	}
+
+});
+    </code>
+		<p>The largest difference between the multiple series call and the single series calls is that we are now making a POST request instead of a GET request.  The <code class="variables">app.get("/blsv1post",</code> part is there to start the call when the page "/blsv1post" is loaded, so you may not have that when you are making your post calls.
+	</p>
+	
+	<p>You may notice that now there is a lot more in our payload variable.  The <code class="variables">"url"</code> now holds what before was part of our first parameter in the request call.  We also now have a <code class="variables">"method"</code> variable, a <code class="variables">"body"</code> object, and a <code class="variables">"headers"</code> object.</p>
+		
+		<p>The <code class="variables">"method"</code> lets the <code class="variables">request</code> know that we are making a POST call.  The <code class="variables">"headers"</code> object, now included, makes sure that the <code class="variables">request</code> knows that the <code class="variables">"Content-Type"</code> is <code class="variables">application/json</code>.  The most important part in the payload is the <code class="variables">"body"</code> object.</p>
+		
+		<p><code class="variables">"body"</code> currently holds three things: a <code class="variables">"seriesid"</code> array, a <code class="variables">"startyear"</code>, and an <code class="variables">"end year"</code>.  The <code class="variables">"seriesid"</code> holds the series_ids that we want to call.  The <code class="variables">"startyear"</code> and <code class="variables">"endyear"</code> set the startYears and endYears for all of the data that you are requesting.  For example, in this code example, we would be requesting data from the "LAUCN040010000000005" and "LAUCN040010000000006" serieses, filtered to only results that are between 2014 and 2015.  Keep in mind that if you set a <code class="variables">startyear</code> and no <code class="variables">endyear</code>, or vice versa, you will get an error back.</p>
+	
+	<h1>Getting useful things from your request</h1>
+	<p>
+		There isn't much different from the <a href="v1howto.html">single series call</a> in this, just either more or less data.  Here are the results of the above call that we just made (note that some of this has been formatted to be more readable to serve as an example, while the rest is there to show you how the returned data is ordered):
+	</p>
+		<code style="white-space:pre; -moz-tab-size:4;">
+{
+	"status":"REQUEST_SUCCEEDED",
+	"responseTime":86,
+	"message":[],
+	"Results":
+			{"series":
+			[{
+				"seriesID":"LAUCN040010000000005",
+				"data":[
+					{
+						"year":"2014",
+						"period":"M12",
+						"periodName":"December",
+						"value":"17631",
+						"footnotes":[{}]
+					},
+					{
+						"year":"2014",
+						"period":"M11",
+						"periodName":"November",
+						"value":"17668",
+						"footnotes":[{}]
+					},
+					{"year":"2014","period":"M10","periodName":"October","value":"17754","footnotes":[{}]},
+					{"year":"2014","period":"M09","periodName":"September","value":"18095","footnotes":[{}]},
+					{"year":"2014","period":"M08","periodName":"August","value":"18219","footnotes":[{}]},
+					{"year":"2014","period":"M07","periodName":"July","value":"17860","footnotes":[{}]},
+					{"year":"2014","period":"M06","periodName":"June","value":"18054","footnotes":[{}]},
+					{"year":"2014","period":"M05","periodName":"May","value":"18011","footnotes":[{}]},
+					{"year":"2014","period":"M04","periodName":"April","value":"17737","footnotes":[{}]},
+					{"year":"2014","period":"M03","periodName":"March","value":"17436","footnotes":[{}]},
+					{"year":"2014","period":"M02","periodName":"February","value":"17594","footnotes":[{}]},
+					{"year":"2014","period":"M01","periodName":"January","value":"17562","footnotes":[{}]},
+					{"year":"2015","period":"M12","periodName":"December","value":"17633","footnotes":[{"code":"P","text":"Preliminary."}]},
+					{"year":"2015","period":"M11","periodName":"November","value":"17761","footnotes":[{}]},
+					{"year":"2015","period":"M10","periodName":"October","value":"17777","footnotes":[{}]},
+					{"year":"2015","period":"M09","periodName":"September","value":"18182","footnotes":[{}]},
+					{"year":"2015","period":"M08","periodName":"August","value":"18370","footnotes":[{}]},
+					{"year":"2015","period":"M07","periodName":"July","value":"17911","footnotes":[{}]},
+					{"year":"2015","period":"M06","periodName":"June","value":"18398","footnotes":[{}]},
+					{"year":"2015","period":"M05","periodName":"May","value":"18443","footnotes":[{}]},
+					{"year":"2015","period":"M04","periodName":"April","value":"18012","footnotes":[{}]},
+					{"year":"2015","period":"M03","periodName":"March","value":"17701","footnotes":[{}]},
+					{"year":"2015","period":"M02","periodName":"February","value":"17549","footnotes":[{}]},
+					{"year":"2015","period":"M01","periodName":"January","value":"17632","footnotes":[{}]}
+				]},
+			{
+				"seriesID":"LAUCN040010000000006",
+				"data":[
+					{
+						"year":"2014",
+						"period":"M12",
+						"periodName":"December",
+						"value":"20668",
+						"footnotes":[{}]
+					},
+					{"year":"2014","period":"M11","periodName":"November","value":"20604","footnotes":[{}]},
+					{"year":"2014","period":"M10","periodName":"October","value":"20791","footnotes":[{}]},
+					{"year":"2014","period":"M09","periodName":"September","value":"21263","footnotes":[{}]},
+					{"year":"2014","period":"M08","periodName":"August","value":"21657","footnotes":[{}]},
+					{"year":"2014","period":"M07","periodName":"July","value":"21517","footnotes":[{}]},
+					{"year":"2014","period":"M06","periodName":"June","value":"21562","footnotes":[{}]},
+					{"year":"2014","period":"M05","periodName":"May","value":"21357","footnotes":[{}]},
+					{"year":"2014","period":"M04","periodName":"April","value":"20992","footnotes":[{}]},
+					{"year":"2014","period":"M03","periodName":"March","value":"21029","footnotes":[{}]},
+					{"year":"2014","period":"M02","periodName":"February","value":"21325","footnotes":[{}]},
+					{"year":"2014","period":"M01","periodName":"January","value":"21455","footnotes":[{}]},
+					{"year":"2015","period":"M12","periodName":"December","value":"20174","footnotes":[{"code":"P","text":"Preliminary."}]},
+					{"year":"2015","period":"M11","periodName":"November","value":"20278","footnotes":[{}]},
+					{"year":"2015","period":"M10","periodName":"October","value":"20367","footnotes":[{}]},
+					{"year":"2015","period":"M09","periodName":"September","value":"20948","footnotes":[{}]},
+					{"year":"2015","period":"M08","periodName":"August","value":"21285","footnotes":[{}]},
+					{"year":"2015","period":"M07","periodName":"July","value":"21027","footnotes":[{}]},
+					{"year":"2015","period":"M06","periodName":"June","value":"21291","footnotes":[{}]},
+					{"year":"2015","period":"M05","periodName":"May","value":"20991","footnotes":[{}]},
+					{"year":"2015","period":"M04","periodName":"April","value":"20603","footnotes":[{}]},
+					{"year":"2015","period":"M03","periodName":"March","value":"20296","footnotes":[{}]},
+					{"year":"2015","period":"M02","periodName":"February","value":"20582","footnotes":[{}]},
+					{"year":"2015","period":"M01","periodName":"January","value":"20814","footnotes":[{}]}]}
+			]}
+} 
+		</code>
+
+		<a href="v2howto.html">Click here to read on Version 2.0 requests</a>
+		
+</div>
+</body>
+</html>

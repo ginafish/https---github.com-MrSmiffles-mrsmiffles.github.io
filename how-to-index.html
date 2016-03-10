@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+
+<head>
+	<meta charset="utf-8">
+	<title>How To Use BLS API</title>
+	<link rel="stylesheet" type="text/css" href="css/mainpage.css">
+</head>
+
+
+<body>
+<div class="header">
+	<a href="how-to-index.html">Home</a> | <a href="seriesidexplanations.html">Series_id Explanations</a> | <a href="vcompare.html">Version 1.0 vs Version 2.0</a> | <a href="v1howto.html">Version 1.0 Single Series Requests</a> | <a href="v1howtomultcall.html">Version 1.0 Multiple Series Requests</a> | <a href="v2howto.html">Version 2.0 Requests</a>
+</div>
+	
+<div class="content">
+	<h1>What is the BLS Public API?</h1>
+    <p>
+        The BLS Public API is an API released by the Bureau of Labor Statistics that gives data on the United States' economy.  It offers quite a lot of data, including:
+    </p>
+    <ul>
+        <li>Employment &amp; Unemployment</li>
+        <li>American Spending &amp; Time Use</li>
+        <li>Inflation &amp; Prices</li>
+        <li>Pay &amp; Benefits</li>
+        <li>Workplace Injuries</li>
+        <li>American Productivity</li>
+        <li>International Economic Information</li>
+        <li>Projections for Employment</li>
+    </ul>
+    <p>Because of the breadth of options offered by the API, when discussing results from calls, we will only focus on the results returned from one particular call at once.  The only differences between calling different types of data with the BLS API are a different series_id and different return data.</p>
+    <p>You can find the official BLS API documentation here: <a href="http://www.bls.gov/developers/home.htm" target="_blank">http://www.bls.gov/developers/home.htm</a>.  Also, take a look at the <a href="http://www.bls.gov/developers/termsOfService.htm" target="_blank">Terms of Service</a> if you plan to use the data returned from the calls in an application.
+    </p>
+	
+	<h1>Why use this guide?</h1>
+	<p>
+		The documentation for the BLS' API mainly focuses on giving examples of code on how to use their API in different languages, on top of not covering how to make Node.js calls.  <!--This guide also has a much better formatted guide on formatting your series_id's, while the BLS' guide includes plain text files with tabular data that is not stored in tables and does not have the data aligned with the column titles.-->This guide includes code examples for making HTML GET/POST requests in javascript using Node.js, as well as more information on structuring your calls.
+	</p>
+	
+	<h1>How to use this guide</h1>
+	<p>
+		This guide assumes that you have a basic knowledge of Node.js, which is basically just how to install packages and run .js scripts through Node.js.  If you want to learn about Node.JS, visit <a href="https://www.codeschool.com/courses/real-time-web-with-node-js">this guide</a> or the <a href="https://nodejs.org/en/docs/" target="_blank">official site</a>.  Examples will list what packages that they are using, but extra files not directly related to formatting the HTML requests, such as the .handlebars files, will not be displayed.
+	</p>
+	
+	<a href="">Click here to learn about series ID's.</a>
+
+</div>
+</body>
+
+</html>

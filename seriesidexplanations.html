@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+
+<head>
+	<meta charset="utf-8">
+	<title>Series_id Explanations</title>
+	<link rel="stylesheet" type="text/css" href="css/mainpage.css">
+</head>
+
+
+<body>
+
+<div class="header">
+	<a href="how-to-index.html">Home</a> | <a href="seriesidexplanations.html">Series_id Explanations</a> | <a href="vcompare.html">Version 1.0 vs Version 2.0</a> | <a href="v1howto.html">Version 1.0 Single Series Requests</a> | <a href="v1howtomultcall.html">Version 1.0 Multiple Series Requests</a> | <a href="v2howto.html">Version 2.0 Requests</a>
+</div>
+	
+<div class="content">
+	<h1>What is a series_id?</h1>
+	<p>
+		You will use at least one series_id in each call that you make.  The series_id is what determines the type of data that you are asking for.  For example, if you wanted National Employment, Hours, and Earnings data, you would have a 13 character length series_id.  Your series_id might look something like "CEU3232300003", which in this case would look for the average hourly earnings of all employees (indicated by the 03 at the end) in the printing and related support activities field (indicated by the 32323000) that are not seasonally adjusted (indicated by the U) with the CE indicating that you were looking for nation-wide data.
+	</p>
+	
+	<h1>Formatting series_id's</h1>
+	<h3>Codes used in Employment/Unemployment calls:</h3>
+	<ul>
+		<li>Seasonal Adjustment Codes</li>
+		<li>Super Sector Codes</li>
+		<li>Industry Codes</li>
+		<li>Data Type Codes</li>
+		<li>State Codes</li>
+		<li>Area Codes</li>
+		<li>Ownership Codes</li>
+		<li>Size Codes</li>
+		<li>Occupation Codes</li>
+		<li>Area Type Codes</li>
+		<li>Data Element Codes</li>
+		<li>Data Class Codes</li>
+		<li>Rate/Level Codes</li>
+		<li>Measure Codes</li>
+		<li>Industry</li>
+		<li>Area</li>
+		<li>Labor Force Codes</li>
+		<li>Character Codes</li>
+		<li>Data Series Codes</li>
+		<li>States and/or Regions and Divisions Codes</li>
+		<li>Industry Base</li>
+		<li>Industry, Reason, Demographic Codes</li>
+		<li>Region</li>
+		<li>Periodicity Code</li>
+		<li>Future Use</li>
+	</ul>
+	<p>Yes, there are a lot.  You can view the BLS's documentation on how to format your series_id <a href="http://www.bls.gov/help/hlpforma.htm">here</a>.  Unfortunately, due to the scope and complexity of these, this guide will not cover how to format your series_id, but though the documentation is long, it should be easy to figure out the series_id that you want using the BLS' documentation.
+	</p>
+	<p>Just as a quick note that may come in handy: the first two digits of an industry code stand for the super sector code.  If you want data for an entire super sector, you can just have the two digits specifying the super sector (50 for information industry) followed by six 0's (ex: 50000000 for information industry).
+	</p>
+	
+	<p><a href="vcompare.html">Click here to figure out which version of the BLS API you want to use</a></p>
+
+
+</div>
+</body>
+</html>

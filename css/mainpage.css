@@ -1,0 +1,54 @@
+body {
+	background-color: lightskyblue;
+	font-size: 16;
+}
+
+div.header {
+	text-align: center;
+	background-color: floralwhite;
+	width: 70%;
+	left: 14%;
+	position: relative;
+	margin: 1%;
+	padding: 5px;
+}
+
+div.content {
+	width: 75%;
+	left: 9.5%;
+	position: relative;
+	background-color: antiquewhite;
+	padding: 10px;
+	padding-left: 3%;
+	padding-right: 3%;
+}
+
+a {
+	text-decoration: none;
+	padding: 10px;
+	color: darkslateblue;
+}
+
+a:hover {
+	color: crimson;
+	text-decoration: underline;
+}
+
+/*div.content.a {
+	color: black;
+}*/
+
+/*
+.code {
+	background-color: aliceblue;
+	border: 1px dashed azure;
+	border-radius: 25px;
+}
+*/
+
+code.variables {
+	background-color: antiquewhite;
+	border: none;
+	border-radius: 0;
+	color:blue;
+}
